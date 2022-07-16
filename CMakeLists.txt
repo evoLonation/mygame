@@ -25,7 +25,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set_property(TARGET glew PROPERTY IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/glew32.lib)
 
 
-add_executable(mygame main.cpp)
+add_executable(mygame renderer.cpp main.cpp)
 
 
 target_link_libraries(mygame  SDL2main SDL2 glew32 opengl32 )
