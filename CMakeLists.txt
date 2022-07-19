@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(mygame VERSION 0.1.0)
 
+# add sub diretory
+set ( OPENGL_LIST )
+file ( GLOB opengl_files "${CMAKE_CURRENT_SOURCE_DIR}/opengl/*.cpp" )
+list ( APPEND OPENGL_LIST ${opengl_files} )
+
+set ( ROOT_LIST )
+file ( GLOB root_files "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" )
+list ( APPEND ROOT_LIST ${root_files} )
+
+
 include(CTest)
 enable_testing()
 
@@ -25,7 +35,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set_property(TARGET glew PROPERTY IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/glew32.lib)
 
 
-add_executable(mygame renderer.cpp main.cpp)
+add_executable(mygame ${OPENGL_LIST} ${ROOT_LIST})
 
 
 target_link_libraries(mygame  SDL2main SDL2 glew32 opengl32 )
