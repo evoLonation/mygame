@@ -1,36 +1,29 @@
 #pragma once
 
-// use to choose nvidia card
-#include<windows.h>
-#ifdef __giao2
-#ifdef __giao
-extern "C" {
-#endif
+#include"opengl/basic.h"
+#include "Math.h"
 
-__declspec(dllexport) DWORD NvOptimusEnablement = 1;
-__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
-#ifdef __giao
-}
-#endif
-#endif
-#include <GLEW/glew.h>
-#include<SDL/SDL.h>
 
+class Actor;
 
 class Renderer{
    public:
    void Init();
    void Finalize();
-   // void addModel();
+   void AddActor(Actor &actor);
+   void DeleteActor(int index);
    void DoDraw();
 
-   SDL_Window* window;
    private:
+   SDL_Window* window;
    SDL_GLContext context;
 
-   // init sub-process
-   void CreateGLContext();
-   void GlewInit();
+   // set shader
+   GLuint programId;
+   // void ShaderProgramInit();
+
+   std::vector<Actor*> actorList;
+   Matrix4 viewProj;
 
 };

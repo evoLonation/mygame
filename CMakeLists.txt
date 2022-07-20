@@ -34,7 +34,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set_property(TARGET glew PROPERTY IMPORTED_LOCATION  ${CMAKE_CURRENT_SOURCE_DIR}/glew32.dll)
 # set_property(TARGET glew PROPERTY IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/glew32.lib)
 
-
+# ROOT_LIST must in front of OPENGL_LIST
 add_executable(mygame  ${ROOT_LIST} ${OPENGL_LIST})
 
 
