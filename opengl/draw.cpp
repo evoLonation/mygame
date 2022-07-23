@@ -1,10 +1,10 @@
 // #include"draw.h"
 
-// GLuint CreateVertexArray(float locations[], unsigned int indexs[], int vertexNum, int indexNum){
+// GLuint CreateVertexArray(float vertices[], unsigned int indexs[], int vertexNum, int indexNum){
 //    GLuint vaoId;
 //    glGenVertexArrays(1, &vaoId);
 //    glBindVertexArray(vaoId);
-//    vBufferId = CreateBuffer(GL_ARRAY_BUFFER, locations, 
+//    vBufferId = CreateBuffer(GL_ARRAY_BUFFER, vertices, 
 //                         vertexNum * 3 * sizeof(float), GL_STATIC_DRAW);
 //    CreateVertexAttribute(0, vBufferId, 3, GL_FLOAT, 0, 0);
 //    iBufferId = CreateBuffer(GL_ELEMENT_ARRAY_BUFFER, indexs, 

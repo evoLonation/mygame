@@ -35,6 +35,9 @@ void CreateGLContext(SDL_Window*& window, SDL_GLContext& context){
    //accelerated visual
    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
+   //depth buffer
+   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
 
    //create a sdlwindow
    window = SDL_CreateWindow("Hello, Mygame!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -56,6 +59,9 @@ void GlewInit(){
    }
    // clear the error generate in glew's initial
    glGetError();
+
+   // open the depth test
+   glEnable(GL_DEPTH_TEST);
 
    //init done
 }
@@ -199,13 +205,20 @@ GLuint CreateVertexArray(float vertices[], unsigned int indexs[], int memberNum,
    glBindVertexArray(vaoId);
    GLuint vBufferId = CreateBuffer(GL_ARRAY_BUFFER, vertices, 
                         vertexNum * memberNum * sizeof(float), GL_STATIC_DRAW);
-   CreateVertexAttribute(0, vBufferId, 3, GL_FLOAT, 0, 0);
-   GLuint iBufferId = CreateBuffer(GL_ELEMENT_ARRAY_BUFFER, indexs, 
-                        indexNum * sizeof(unsigned int), GL_STATIC_DRAW);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBufferId);
+   CreateVertexAttribute(0, vBufferId, 3, GL_FLOAT, memberNum * sizeof(float), 0);
    glEnableVertexAttribArray(0);
+   if(memberNum == 5){
+      CreateVertexAttribute(1, vBufferId, 2, GL_FLOAT, memberNum * sizeof(float), 3 * sizeof(float));
+      glEnableVertexAttribArray(1);
+   }
+   if(indexNum != 0){
+      GLuint iBufferId = CreateBuffer(GL_ELEMENT_ARRAY_BUFFER, indexs, 
+                           indexNum * sizeof(unsigned int), GL_STATIC_DRAW);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBufferId);
+   }
    glBindVertexArray(0);
    return vaoId;
+   
 }
 
 /**

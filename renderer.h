@@ -1,29 +1,28 @@
 #pragma once
 
 #include"opengl/basic.h"
-#include "Math.h"
+#include "math.h"
 
 
 
 class Actor;
 
 class Renderer{
-   public:
-   void Init();
-   void Finalize();
-   void AddActor(Actor &actor);
-   void DeleteActor(int index);
-   void DoDraw();
+public:
+    void Init();
+    void Finalize();
+    void AddMesh(class MeshComponent* mesh);
+    void DeleteMesh(int index);
+    void DoDraw();
 
-   private:
-   SDL_Window* window;
-   SDL_GLContext context;
+private:
+    SDL_Window* window;
+    SDL_GLContext context;
+    GLuint programId;
 
-   // set shader
-   GLuint programId;
-   // void ShaderProgramInit();
 
-   std::vector<Actor*> actorList;
-   Matrix4 viewProj;
+
+    std::vector<class MeshComponent*> meshList;
+    Matrix4 viewProj;
 
 };

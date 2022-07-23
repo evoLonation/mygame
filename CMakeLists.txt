@@ -3,10 +3,12 @@ project(mygame VERSION 0.1.0)
 
 # add sub diretory
 set ( OPENGL_LIST )
-file ( GLOB opengl_files "${CMAKE_CURRENT_SOURCE_DIR}/opengl/*.cpp" )
+file ( GLOB opengl_files "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp" )
 list ( APPEND OPENGL_LIST ${opengl_files} )
 
-set ( ROOT_LIST )
+
+
+set ( ROOT_LIST math.cpp math.h)
 file ( GLOB root_files "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" )
 list ( APPEND ROOT_LIST ${root_files} )
 
