@@ -2,7 +2,7 @@
 #include <cmath>
 
 constexpr float PI = 3.1415926535;
-inline bool is0(float);
+bool is0(float);
 
 class MatrixFactory{
 public:
