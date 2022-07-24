@@ -1,27 +1,23 @@
 #pragma once
 #include"math.h"
 #include "texture.h"
+#include "actor.h"
 
 
-typedef enum{
-    MESH_COMPONENT,
-    LOCATION_COMPONENT,
-    CAMERA_COMPONENT,
-} Component_Type;
+class Actor;
 
 class BaseComponent{
 public:
     BaseComponent() = default;
     ~BaseComponent() = default;
     virtual void Update() = 0;
-    void SetOwner(class Actor* actor);
 
-    virtual Component_Type GetType() const = 0;
 
-    class Actor *GetOwner() const;
+    Actor *GetOwner() const;
 
 protected:
     Actor* owner = nullptr;
+    friend void Actor::AddComponent(class BaseComponent* component);;
 
 };
 
@@ -32,7 +28,6 @@ public:
     // to actor
     void Update() override;
 
-    Component_Type GetType() const override;
 
 private:
     class Model* model;
@@ -60,7 +55,6 @@ public:
  */
 class LocationComponent : public BaseComponent {
 public:
-    Component_Type GetType() const  override;
 
 public:
     LocationComponent() = default;
@@ -89,7 +83,6 @@ private:
 class CameraComponent : public BaseComponent {
 public:
     void Update() override;
-    Component_Type GetType() const override;
 
     CameraComponent() = default;
     void SetProjection(float width, float height, float near, float far);

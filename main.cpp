@@ -6,8 +6,6 @@
 #include "actor.h"
 
 int main(int argv, char** args){
-   
-
     Renderer renderer;
     renderer.Init();
 

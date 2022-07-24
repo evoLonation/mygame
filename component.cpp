@@ -11,7 +11,6 @@ MeshComponent::~MeshComponent(){}
 
 void MeshComponent::Update(){
 
-
 }
 
 Model *MeshComponent::getModel() const {
@@ -45,9 +44,6 @@ void MeshComponent::setTranslation(float x, float y, float z) {
     computeWorldTrans();
 }
 
-Component_Type MeshComponent::GetType() const {
-    return MESH_COMPONENT;
-}
 
 
 void LocationComponent::SetLocation(float x, float y, float z) {
@@ -79,9 +75,6 @@ void LocationComponent::Update() {
 
 }
 
-Component_Type LocationComponent::GetType() const {
-    return LOCATION_COMPONENT;
-}
 
 const Matrix4& LocationComponent::GetWorldTrans() {
     return worldTrans;
@@ -96,9 +89,6 @@ const Matrix4 &LocationComponent::GetWorldTransInverse() {
     return worldTransInverse;
 }
 
-void BaseComponent::SetOwner(struct Actor *actor) {
-    owner = actor;
-}
 
 Actor *BaseComponent::GetOwner() const {
     return owner;
@@ -108,9 +98,6 @@ void CameraComponent::Update() {
 
 }
 
-Component_Type CameraComponent::GetType() const {
-    return CAMERA_COMPONENT;
-}
 
 void CameraComponent::SetProjection(float width, float height, float near, float far) {
     perspectiveProjection = MatrixFactory::CreatePerspectiveProjection(width, height, near, far);

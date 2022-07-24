@@ -40,14 +40,14 @@ void Renderer::DoDraw(){
 //clear thr color buffer using clear color and clear the z buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(auto mesh : meshList){
-        LocationComponent* locationComponent = static_cast<LocationComponent*>(mesh->GetComponent(LOCATION_COMPONENT));
-        MeshComponent* meshComponent = static_cast<MeshComponent*>(mesh->GetComponent(MESH_COMPONENT));
+        LocationComponent* locationComponent = mesh->GetComponent<LocationComponent>();
+        MeshComponent* meshComponent = mesh->GetComponent<MeshComponent>();
         glBindVertexArray(meshComponent->getModel()->getVaoId());
         glBindTexture(GL_TEXTURE_2D, meshComponent->getTexture()->getTextureId());
         glUniformMatrix4fv(glGetUniformLocation(programId, "worldTransform"), 1, GL_TRUE,
                            reinterpret_cast<const float*>(locationComponent->GetWorldTrans().data));
-        CameraComponent* cameraComponent = static_cast<CameraComponent*>(camera->GetComponent(CAMERA_COMPONENT));
-        LocationComponent* cameraLocationComponent = static_cast<LocationComponent*>(camera->GetComponent(LOCATION_COMPONENT));
+        CameraComponent* cameraComponent = camera->GetComponent<CameraComponent>();
+        LocationComponent* cameraLocationComponent = camera->GetComponent<LocationComponent>();
 
         glUniformMatrix4fv(glGetUniformLocation(programId, "toCamera"), 1, GL_TRUE,
                            reinterpret_cast<const GLfloat *>((cameraLocationComponent->GetWorldTransInverse() *
