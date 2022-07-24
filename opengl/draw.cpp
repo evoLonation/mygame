@@ -16,9 +16,9 @@
 // }
 
 
-// void SetViewProj(const Matrix4& viewProj){
+// void SetViewProj(const BaseMatrix4& viewProj){
 //    glUniformMatrix4fv(glGetUniformLocation(programId, "viewProj"), 1, GL_TRUE, viewProj.GetAsFloatPtr());
 // }
 
 
-// void DrawActor(GLuint vaoId, const Matrix4& worldTrans);
+// void DrawActor(GLuint vaoId, const BaseMatrix4& worldTrans);

@@ -40,7 +40,7 @@
 //	{ 0.0f, 0.0f, 0.0f, 1.0f }
 //};
 //
-//const Matrix4 Matrix4::Identity(m4Ident);
+//const BaseMatrix4 BaseMatrix4::Identity(m4Ident);
 //
 //const Quaternion Quaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
 //
@@ -53,7 +53,7 @@
 //	return retVal;
 //}
 //
-//Vector3 Vector3::Transform(const Vector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
+//Vector3 Vector3::Transform(const Vector3& vec, const BaseMatrix4& mat, float w /*= 1.0f*/)
 //{
 //	Vector3 retVal;
 //	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
@@ -67,7 +67,7 @@
 //}
 //
 //// This will transform the vector and renormalize the w component
-//Vector3 Vector3::TransformWithPerspDiv(const Vector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
+//Vector3 Vector3::TransformWithPerspDiv(const Vector3& vec, const BaseMatrix4& mat, float w /*= 1.0f*/)
 //{
 //	Vector3 retVal;
 //	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
@@ -96,7 +96,7 @@
 //	return retVal;
 //}
 //
-//void Matrix4::Invert()
+//void BaseMatrix4::Invert()
 //{
 //	// Thanks slow math
 //	// This is a really janky way to unroll everything...
@@ -211,7 +211,7 @@
 //	}
 //}
 //
-//Matrix4 Matrix4::CreateFromQuaternion(const class Quaternion& q)
+//BaseMatrix4 BaseMatrix4::CreateFromQuaternion(const class Quaternion& q)
 //{
 //	float mat[4][4];
 //
@@ -235,5 +235,5 @@
 //	mat[3][2] = 0.0f;
 //	mat[3][3] = 1.0f;
 //
-//	return Matrix4(mat);
+//	return BaseMatrix4(mat);
 //}

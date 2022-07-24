@@ -4,16 +4,17 @@
 #include "math.h"
 
 
-
 class Actor;
 
 class Renderer{
 public:
     void Init();
     void Finalize();
-    void AddMesh(class MeshComponent* mesh);
+    void AddMesh(Actor* meshActor);
+    void AddCamera(Actor* camera);
     void DeleteMesh(int index);
     void DoDraw();
+
 
 private:
     SDL_Window* window;
@@ -22,7 +23,8 @@ private:
 
 
 
-    std::vector<class MeshComponent*> meshList;
-    Matrix4 viewProj;
+    std::vector<Actor*> meshList;
+    Actor* camera;
+    BaseMatrix4 viewProj;
 
 };
