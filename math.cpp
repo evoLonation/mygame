@@ -136,6 +136,14 @@ float BaseMatrix4::Get(int i, int j) const {
     return data[i][j];
 }
 
+Vector4 BaseMatrix4::GetRow(int i) const {
+    return {data[i][0], data[i][1], data[i][2], data[i][3]};
+}
+
+Vector4 BaseMatrix4::GetCol(int i) const {
+    return {data[0][i], data[1][i], data[2][i], data[3][i]};
+}
+
 
 Matrix4::Matrix4(const float (*arr)[4]) : BaseMatrix4(arr) {}
 Matrix4::Matrix4(const BaseMatrix4 &matrix4) : BaseMatrix4(matrix4){}
@@ -160,9 +168,6 @@ void TranslationMatrix::operator*=(const TranslationMatrix &matrix) {
     *this = *this * matrix;
 }
 
-TranslationMatrix TranslationMatrix::operator*(const OrthogonalMatrix &matrix) {
-    return {(*this * static_cast<BaseMatrix4>(matrix)).data};
-}
 
 
 OrthogonalMatrix::OrthogonalMatrix(): BaseMatrix4(MatrixFactory::CreateUnitary()) {}
@@ -209,6 +214,11 @@ Vector3::Vector3(float x, float y, float z) {
     data[1] = y;
     data[2] = z;
 }
+
+float &Vector3::operator[](int i) {
+    return data[i];
+}
+
 Vector3 operator*(float x, const Vector3 &vector3) {
     return {x * vector3.data[0], x * vector3.data[1], x * vector3.data[2]};
 }
@@ -239,6 +249,21 @@ bool operator==(const Vector3 &vector1, const Vector3 &vector2) {
             is0(vector1.data[1] - vector2.data[1]) &&
             is0(vector1.data[2] - vector2.data[2]);
 }
+
+float operator*(const Vector4 &vector1, const Vector4 &vector2) {
+    return vector1.data[0] * vector2.data[0] + vector1.data[1] * vector2.data[1] +
+    vector1.data[2] * vector2.data[2] + vector1.data[3] * vector2.data[3];
+}
+
+Vector4 operator*(const Vector4 &vector4, const BaseMatrix4 &matrix4) {
+    Vector4 vector;
+    for(int i = 0; i < 4; i++){
+        vector[i] = vector4 * matrix4.GetCol(i);
+    }
+    return vector;
+}
+
+
 
 
 Quaternion Quaternion::operator*() {
@@ -277,4 +302,17 @@ UnitQuaternion::UnitQuaternion(const UnitVector3& unitVector, float theta) {
     data[1] = unitVector.data[1] * sin;
     data[2] = unitVector.data[2] * sin;
     data[3] = cos;
+}
+
+Vector4::Vector4(float x, float y, float z, float w) {
+    data[0] = x;
+    data[1] = y;
+    data[2] = z;
+    data[3] = w;
+}
+
+Vector4::Vector4(const Vector3 &vector3): Vector4(vector3.data[0], vector3.data[1], vector3.data[2], 0) {}
+
+float &Vector4::operator[](int i) {
+    return data[i];
 }
