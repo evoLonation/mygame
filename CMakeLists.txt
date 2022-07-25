@@ -8,7 +8,7 @@ list ( APPEND OPENGL_LIST ${opengl_files} )
 
 
 
-set ( ROOT_LIST math.cpp math.h)
+set ( ROOT_LIST)
 file ( GLOB root_files "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" )
 list ( APPEND ROOT_LIST ${root_files} )
 
