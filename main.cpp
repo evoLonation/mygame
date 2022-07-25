@@ -16,12 +16,11 @@ int main(int argv, char** args){
     MeshComponent* mesh = new MeshComponent(model, texture);
 
     LocationComponent* location = new LocationComponent();
-//    location->SetDirection(Vector3(0, 0, 1), 0);
     location->SetDirection(Vector3(0, 0, -1), 3.14/2);
     location->SetLocation(0, 0, 6);
 
     CameraComponent* cameraComponent = new CameraComponent();
-    cameraComponent->SetProjection(3, 3, 4, 10);
+    cameraComponent->SetProjection(1, 1, 3, 100);
     LocationComponent* cameraLocation = new LocationComponent();
     cameraLocation->SetLocation(0, 0, 0);
 
@@ -38,20 +37,6 @@ int main(int argv, char** args){
     renderer.AddCamera(camera);
 
 
-//    TranslationMatrix matrix4 = MatrixFactory::CreateTranslation(1,2,3);
-//    TranslationMatrix matrix3 = MatrixFactory::CreateTranslation(1,2,3);
-//    OrthogonalMatrix matrix = MatrixFactory::CreateRotationX(1);
-//    BaseMatrix4 matrix42;
-//    Matrix4 matrix41 = matrix3 * matrix;
-
-    //   mesh->setScale(300);
-//    mesh->setTranslation(0, 0, -6);
-
-//    Camera* camera = new Camera();
-//    camera->setPerspectiveProjection(MatrixFactory::CreatePerspectiveProjection(2, 2, 5, 10));
-//    renderer.AddMesh(mesh);
-//    renderer.AddCamera(camera);
-
     bool isQuit = false;
     while (!isQuit)
     {
@@ -65,13 +50,27 @@ int main(int argv, char** args){
         }
         const Uint8* state = SDL_GetKeyboardState(nullptr);
         if(state[SDL_SCANCODE_A]){
-         // actor2.RotateY(-2 * 3.14 / 60);
-
+            cameraLocation->TranslateX(- 0.03);
         }
+        if(state[SDL_SCANCODE_D]){
+            cameraLocation->TranslateX(0.03);
+        }
+        if(state[SDL_SCANCODE_W]){
+            cameraLocation->TranslateZ(0.03);
+        }
+        if(state[SDL_SCANCODE_S]){
+            cameraLocation->TranslateZ(-0.03);
+        }
+        if(state[SDL_SCANCODE_Q]){
+            cameraLocation->RotateY(0.03);
+        }
+        if(state[SDL_SCANCODE_E]){
+            cameraLocation->RotateY(-0.03);
+        }
+
 
         renderer.DoDraw();
 
-        // glDrawElements(GL_TRIANGLES, model.indexNumber, GL_UNSIGNED_INT, nullptr);
     }
     renderer.Finalize();
     return 0;

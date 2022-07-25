@@ -58,12 +58,19 @@ public:
 
 public:
     LocationComponent() = default;
+    //下面的两个函数用于初始化位置
     void SetLocation(float x, float y, float z);
     /**
      * @param front actor面朝的方向（z轴的方向）
      * @param theta 根据右手定则旋转的角度（如果为0，代表x轴平行于世界坐标的xy面）
      */
     void SetDirection(const Vector3 &front, float theta);
+    //下面的函数用于在初始化的基础上进一步移动
+    void TranslateZ(float distance);
+    void TranslateX(float distance);
+    void TranslateY(float distance);
+    void RotateY(float theta);
+
 
     void Update() override;
     const Matrix4& GetWorldTrans();

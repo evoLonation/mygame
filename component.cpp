@@ -89,6 +89,29 @@ const Matrix4 &LocationComponent::GetWorldTransInverse() {
     return worldTransInverse;
 }
 
+void LocationComponent::TranslateZ(float distance) {
+    Vector4 vector(0, 0, distance, 0);
+    vector = vector * rotate;
+    translation *= MatrixFactory::CreateTranslation(vector[0], vector[1], vector[2]);
+    Compute();
+}
+
+void LocationComponent::TranslateX(float distance) {
+    Vector4 vector(distance, 0, 0, 0);
+    vector = vector * rotate;
+    translation *= MatrixFactory::CreateTranslation(vector[0], vector[1], vector[2]);
+    Compute();
+}
+
+void LocationComponent::TranslateY(float distance) {
+
+}
+
+void LocationComponent::RotateY(float theta) {
+    rotate *= MatrixFactory::CreateRotationY(theta);
+    Compute();
+}
+
 
 Actor *BaseComponent::GetOwner() const {
     return owner;
