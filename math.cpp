@@ -138,6 +138,7 @@ float BaseMatrix4::Get(int i, int j) const {
 
 
 Matrix4::Matrix4(const float (*arr)[4]) : BaseMatrix4(arr) {}
+Matrix4::Matrix4(const BaseMatrix4 &matrix4) : BaseMatrix4(matrix4){}
 
 TranslationMatrix::TranslationMatrix(): BaseMatrix4(MatrixFactory::CreateUnitary()) {}
 
@@ -157,6 +158,10 @@ TranslationMatrix TranslationMatrix::operator*(const TranslationMatrix &matrix) 
 
 void TranslationMatrix::operator*=(const TranslationMatrix &matrix) {
     *this = *this * matrix;
+}
+
+TranslationMatrix TranslationMatrix::operator*(const OrthogonalMatrix &matrix) {
+    return {(*this * static_cast<BaseMatrix4>(matrix)).data};
 }
 
 

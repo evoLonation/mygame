@@ -43,6 +43,8 @@ class Matrix4 : public BaseMatrix4 {
     friend MatrixFactory;
 public:
     Matrix4(const float (*arr)[4]);
+    //用于特殊矩阵转可变矩阵
+    Matrix4(const BaseMatrix4& matrix4);
     Matrix4() = default;
     using BaseMatrix4::data;
 
@@ -64,6 +66,8 @@ public:
     TranslationMatrix operator!();
     //新定义的函数会直接覆盖掉原来的父类中的运算符重载，尽管参数不完全一样
     TranslationMatrix operator*(const TranslationMatrix& matrix);
+    //位移矩阵在坐标系变换后还是位移矩阵
+    TranslationMatrix operator*(const OrthogonalMatrix& matrix);
     using BaseMatrix4::operator*;
     void operator*=(const TranslationMatrix& matrix);
     // *= 运算就不用继承父类的了
