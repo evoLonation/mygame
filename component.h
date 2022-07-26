@@ -39,19 +39,26 @@ private:
     BaseMatrix4 worldTrans;
     void computeWorldTrans();
 public:
-    Model *getModel() const;
+    Model *GetModel() const;
 
     Texture *getTexture() const;
 
-    const BaseMatrix4 getWorldTrans() const;
+    BaseMatrix4 getWorldTrans() const;
 
-    void setScale(float scale);
+    void GetScale(float scale);
 
     void setTranslation(float x, float y, float z);
 };
 
 /**
  * 定义和修改actor的位置及朝向
+ * 所有位置变化可以分为两种类型：
+ * 相对于世界空姐的变化：初始化Set成员等等
+ * 相对于目前的模型空间的变化
+ *
+ * 每次执行Set类的成员函数时，都会重置之前所有的相对于模型空间的变化
+ *
+ *
  */
 class LocationComponent : public BaseComponent {
 public:
@@ -70,6 +77,8 @@ public:
     void TranslateX(float distance);
     void TranslateY(float distance);
     void RotateY(float theta);
+    //根据本坐标系中的一个轴来旋转
+    void RotateByAxis(const Vector3& start, const Vector3& vector, float theta);
 
 
     void Update() override;
@@ -80,10 +89,19 @@ public:
 private:
     TranslationMatrix translation;
     OrthogonalMatrix rotate;
+    bool isInitialization = true;
+
     Matrix4 worldTrans = MatrixFactory::CreateUnitary();
     Matrix4 worldTransInverse = MatrixFactory::CreateUnitary();
 
+    //每个Set函数执行前执行的
+    void Initialization();
+    //每个Set函数执行后执行的
     void Compute();
+
+    // 添加新的变换（在现在模型空间基础上）
+    void AddTransform(const TranslationMatrix& matrix);
+    void AddTransform(const OrthogonalMatrix& matrix);
 
 };
 
@@ -93,6 +111,8 @@ public:
 
     CameraComponent() = default;
     void SetProjection(float width, float height, float near, float far);
+    // 以近平面为轴进行转动
+    void RotateByNearY();
     const Matrix4& GetProjection();
 private:
     Matrix4 perspectiveProjection = MatrixFactory::CreatePerspectiveProjection(1, 1, 1, 2);
