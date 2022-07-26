@@ -42,7 +42,7 @@ void Renderer::DoDraw(){
     for(auto mesh : meshList){
         LocationComponent* locationComponent = mesh->GetComponent<LocationComponent>();
         MeshComponent* meshComponent = mesh->GetComponent<MeshComponent>();
-        glBindVertexArray(meshComponent->getModel()->getVaoId());
+        glBindVertexArray(meshComponent->GetModel()->getVaoId());
         glBindTexture(GL_TEXTURE_2D, meshComponent->getTexture()->getTextureId());
         glUniformMatrix4fv(glGetUniformLocation(programId, "worldTransform"), 1, GL_TRUE,
                            reinterpret_cast<const float*>(locationComponent->GetWorldTrans().data));
@@ -57,8 +57,8 @@ void Renderer::DoDraw(){
 
 // glDrawElements(GL_TRIANGLES, actor->model->indexNumber, GL_UNSIGNED_INT, nullptr);
 //        static int count = 3;
-//      if(count < mesh->getModel()->vertexNumber) count += 9;
-        glDrawArrays(GL_TRIANGLES, 0, meshComponent->getModel()->getVertexNumber());
+//      if(count < mesh->GetModel()->vertexNumber) count += 9;
+        glDrawArrays(GL_TRIANGLES, 0, meshComponent->GetModel()->getVertexNumber());
     }
     SDL_GL_SwapWindow(window);
 
