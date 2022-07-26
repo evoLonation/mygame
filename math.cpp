@@ -71,17 +71,19 @@ Matrix4 MatrixFactory::CreateUnitary() {
     return {arr};
 }
 /**
- * 在游戏引擎架构一书中，透视投影矩阵的转换貌似会颠倒z轴；因此这里使用《创建3D游戏这本书》的矩阵创建方式，使得观察体积是z轴正方向的，更加符合常识。
+ * 本矩阵基于游戏引擎架构一书进行更改，主要是将第一行和第三行的值求负，目的是颠倒x轴和z轴。
+ * 更改后的观察体积仍然是右手坐标系，但是不同于上述的书，摄影机的“镜头”正对着z轴，y轴指向镜头上面，x轴指向镜头左边。
+ *
  */
 Matrix4 MatrixFactory::CreatePerspectiveProjection(float left, float right, float top, float bottom, float near, float far) {
     auto m4 = Matrix4();
-    m4.data[0][0] =  2 * near / (right - left);
+    m4.data[0][0] = - 2 * near / (right - left);
     m4.data[1][1] =  2 * near / (top - bottom);
-    m4.data[2][0] = (right + left) / (right - left);
-    m4.data[2][1] = (top + bottom) / (top - bottom);
-    m4.data[2][2] = -(far + near) / (near - far);
+    m4.data[2][0] = - (right + left) / (right - left);
+    m4.data[2][1] = - (top + bottom) / (top - bottom);
+    m4.data[2][2] = (far + near) / (far - near);
     m4.data[2][3] = 1;
-    m4.data[3][2] = 2 * near * far / (near - far);
+    m4.data[3][2] = - 2 * near * far / (far - near);
     return m4;
 }
 
@@ -152,7 +154,7 @@ TranslationMatrix::TranslationMatrix(): BaseMatrix4(MatrixFactory::CreateUnitary
 
 TranslationMatrix::TranslationMatrix(const float (*arr)[4]) : BaseMatrix4(arr) {}
 
-TranslationMatrix TranslationMatrix::operator!() {
+TranslationMatrix TranslationMatrix::operator!() const {
     TranslationMatrix  translationMatrix(*this);
     translationMatrix.data[3][0] = -data[3][0];
     translationMatrix.data[3][1] = -data[3][1];
@@ -215,7 +217,10 @@ Vector3::Vector3(float x, float y, float z) {
     data[2] = z;
 }
 
-float &Vector3::operator[](int i) {
+const float &Vector3::operator[](int i) const {
+    return data[i];
+}
+float &Vector3::operator[](int i){
     return data[i];
 }
 
@@ -314,5 +319,8 @@ Vector4::Vector4(float x, float y, float z, float w) {
 Vector4::Vector4(const Vector3 &vector3): Vector4(vector3.data[0], vector3.data[1], vector3.data[2], 0) {}
 
 float &Vector4::operator[](int i) {
+    return data[i];
+}
+const float &Vector4::operator[](int i) const {
     return data[i];
 }

@@ -70,7 +70,7 @@ protected:
 
 public:
 
-    TranslationMatrix operator!();
+    TranslationMatrix operator!() const;
     //新定义的函数会直接覆盖掉原来的父类中的运算符重载，尽管参数不完全一样
     TranslationMatrix operator*(const TranslationMatrix& matrix);
     using BaseMatrix4::operator*;
@@ -125,6 +125,7 @@ public:
     float data[4] = {};
 
     float& operator[](int i);
+    const float& operator[](int i) const;
 };
 
 class Vector3 {
@@ -134,6 +135,7 @@ public:
 
     float data[3] = {};
 
+    const float& operator[](int i) const;
     float& operator[](int i);
 };
 class UnitVector3 : public Vector3{
