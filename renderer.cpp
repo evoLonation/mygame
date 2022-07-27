@@ -56,10 +56,10 @@ void Renderer::DoDraw() {
 //        glUniformMatrix4fv(glGetUniformLocation(programId, "toCamera"), 1, GL_TRUE,
 //                           reinterpret_cast<const GLfloat *>(cameraComponent->GetProjection().data));
 
-        glDrawElements(GL_TRIANGLES, meshComponent->GetModel()->getVertexNumber(), GL_UNSIGNED_INT, nullptr);
+//        glDrawElements(GL_TRIANGLES, meshComponent->GetModel()->getVertexNumber(), GL_UNSIGNED_INT, nullptr);
 //        static int count = 3;
 //      if(count < mesh->GetModel()->vertexNumber) count += 9;
-//        glDrawArrays(GL_TRIANGLES, 0, meshComponent->GetModel()->getVertexNumber());
+        glDrawArrays(GL_TRIANGLES, 0, meshComponent->GetModel()->getVertexNumber());
     }
     SDL_GL_SwapWindow(window);
 
