@@ -3,20 +3,21 @@
 #include<string>
 #include<vector>
 #include<iostream>
+#include <unordered_map>
 #include"opengl/basic.h"
 
 
-
-Model::Model(const std::string &fileName){
-    float* vertices;
-    unsigned int*  indexs;
+Model::Model(const std::string &fileName) {
+    float *vertices;
+    unsigned int *indexs;
     ReadFromObj(fileName, vertices, indexs);
     vaoId = CreateVertexArray(vertices, indexs, 5, vertexNumber, indexNumber);
     delete[] vertices;
     delete[] indexs;
 }
-Model::~Model(){
-   glDeleteVertexArrays(1, &vaoId);
+
+Model::~Model() {
+    glDeleteVertexArrays(1, &vaoId);
 }
 
 //Model* Model::CreateModel(const std::string &modelName, const std::string &fileName){
@@ -32,89 +33,100 @@ Model::~Model(){
 //   delete deletedModel;
 //}
 
+struct VertexIndex {
+    unsigned int lIndex;
+    unsigned int tIndex;
+    unsigned int nIndex;
 
-void Model::ReadFromObj(const std::string &name, float *&vertices, unsigned int *&indexs){
-   std::ifstream in(name);
-   std::string str;
-   std::vector<float> locationList;
-   std::vector<float> colorLocationList;
-   std::vector<unsigned int> locationIndexList;
-   std::vector<unsigned int> colorIndexList;
-   while (std::getline(in, str))
-   {
-      // std::cout << str;
-      std::istringstream instr(str);
-      
-      
-      switch(instr.get()){
-         case 'v':
-            switch(instr.get()){
-               float c;
-               case ' ':
-               for(int i = 0;i < 3; i++){
-                  instr >> c;
-                  locationList.push_back(c);
-               }
-               break;
-               case 't':
-               for(int i = 0; i < 2; i++){
-                  instr >> c;
-                  colorLocationList.push_back(c);
-               }
-               break;
-            }
-            break;
-         case 'f':
-            int locationIndex, colorIndex, normalIndex;
-            char tmp;
-            for(int i = 0;i < 3; i++){
-               instr >> locationIndex >> tmp >> colorIndex >> tmp >> normalIndex;
-               locationIndexList.push_back(locationIndex);
-               colorIndexList.push_back(colorIndex);
-            }
-            break;
-      }
-   }
-   // no index implement
-   vertexNumber = locationIndexList.size();
-   vertices = new float[vertexNumber * 5];
-   for(int i = 0; i < vertexNumber; i++){
-      int locationIndex = locationIndexList[i] - 1;
-      vertices[i * 5] = locationList[locationIndex * 3 + 0];
-      vertices[i * 5 + 1] = locationList[locationIndex * 3 + 1];
-      vertices[i * 5 + 2] = locationList[locationIndex * 3 + 2];
-      int colorIndex = colorIndexList[i]  - 1;
-      vertices[i * 5 + 3] = 1 - colorLocationList[colorIndex * 2 + 0];
-      vertices[i * 5 + 4] = 1 -  colorLocationList[colorIndex * 2 + 1];
-   }
-   indexNumber = 0;
-   indexs = new unsigned int[0];
+    bool operator==(const VertexIndex &vertexIndex) const {
+        return lIndex == vertexIndex.lIndex && tIndex == vertexIndex.tIndex
+               && nIndex == vertexIndex.nIndex;
+    }
+};
 
-   ///// todo index implement
-   // vertexNumber = locationList.size() / 3;
-   // indexNumber = locationIndexList.size();
-   // colorNumber = colorLocationList.size() / 2;
+class IndexHasher {
+public:
+    std::size_t operator()(const VertexIndex &i) const {
+        using std::hash;
+        return hash<unsigned int>()(i.lIndex + i.tIndex + i.tIndex);
+    }
+};
 
-   // vertices = new float[colorNumber * 5];
-   // for(int i = 0; i < colorNumber; i++){
-   //    vertices
-   // }
 
-   // indexs = new unsigned int[locationIndexList.size()];
-   // for(int i = 0; i < vertexNumber; i++){
-   //    vertices[i * 5] = locationList[i * 3 + 0];
-   //    vertices[i * 5 + 1] = locationList[i * 3 + 1];
-   //    vertices[i * 5 + 2] = locationList[i * 3 + 2];
-   //    vertices[i * 5 + 3] = colorLocationList[i * 2 + 0];
-   //    vertices[i * 5 + 4] = colorLocationList[i * 2 + 1];
+void Model::ReadFromObj(const std::string &name, float *&vertices, unsigned int *&indexs) {
+    std::ifstream in(name);
+    std::string str;
+    std::vector<float> locationList;
+    std::vector<float> colorLocationList;
+    //这里值直接指向文件中顶点成员的索引。
+    std::unordered_map<VertexIndex, unsigned int, IndexHasher> primaryIndexMap;
+    //这里是将VertexIndex去重后，最终的指向primaryIndex的索引。
+    std::vector<unsigned int> finalIndexList;
+    // start to get vertex information and index
+    while (std::getline(in, str)) {
+        // std::cout << str;
+        std::istringstream instr(str);
 
-   // }
-   // for(int i = 0; i < locationIndexList.size(); i++){
-      
-   //    // notice!!! minus 1
-   //    indexs[i] = locationIndexList[i] - 1;
-   // }
-   // return;
+
+        switch (instr.get()) {
+            case 'v':
+                switch (instr.get()) {
+                    float c;
+                    case ' ':
+                        for (int i = 0; i < 3; i++) {
+                            instr >> c;
+                            locationList.push_back(c);
+                        }
+                        break;
+                    case 't':
+                        for (int i = 0; i < 2; i++) {
+                            instr >> c;
+                            colorLocationList.push_back(c);
+                        }
+                        break;
+                }
+                break;
+            case 'f':
+                unsigned int locationIndex, colorIndex, normalIndex;
+                char tmp;
+                for (int i = 0; i < 3; i++) {
+                    instr >> locationIndex >> tmp >> colorIndex >> tmp >> normalIndex;
+                    VertexIndex newIndex = {locationIndex - 1, colorIndex - 1, normalIndex - 1};
+                    unsigned int finalIndex;
+                    auto iterator = primaryIndexMap.find(newIndex);
+                    if (iterator == primaryIndexMap.end()){
+                        finalIndex = primaryIndexMap.size();
+                        primaryIndexMap.insert(std::pair<VertexIndex, unsigned int>(newIndex, finalIndex));
+                    }else {
+                        finalIndex = (*iterator).second;
+                    }
+                    finalIndexList.push_back(finalIndex);
+                }
+                break;
+        }
+    }
+    vertexNumber = finalIndexList.size();
+    indexNumber = finalIndexList.size();
+    std::vector<VertexIndex> primaryIndexList(vertexNumber);
+    for(auto pair : primaryIndexMap) {
+        primaryIndexList[pair.second] = pair.first;
+    }
+
+    indexs = new unsigned int[vertexNumber];
+    for(int i = 0; i < finalIndexList.size(); i++) {
+        indexs[i] = finalIndexList[i];
+    }
+
+    vertices = new float [vertexNumber * 5];
+    for(auto index : finalIndexList) {
+        VertexIndex primaryIndex = primaryIndexList[index];
+        vertices[index * 5] = locationList[primaryIndex.lIndex * 3 + 0];
+        vertices[index * 5 + 1] = locationList[primaryIndex.lIndex * 3 + 1];
+        vertices[index * 5 + 2] = locationList[primaryIndex.lIndex * 3 + 2];
+        vertices[index * 5 + 3] = 1- colorLocationList[primaryIndex.tIndex * 2 + 0];
+        vertices[index * 5 + 4] = 1- colorLocationList[primaryIndex.tIndex * 2 + 1];
+    }
+
 }
 
 GLuint Model::getVaoId() const {
